@@ -276,7 +276,6 @@ t, d, g, i, c, b = PAGES["mapa-do-site"]; PAGES["mapa-do-site"] = (t, d, g, i, c
 shutil.rmtree(OUT, ignore_errors=True)
 shutil.copytree("assets", os.path.join(OUT, "assets"))
 EXTRA = {"gerar-rg-rp": '<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script><script src="/assets/js/rg.js"></script>'}
-if os.path.isdir("api"): shutil.copytree("api", os.path.join(OUT, "api"))  # funções serverless (Vercel)
 for slug, (t, d, g, i, c, b) in PAGES.items():
     write("pt-br/%s/index.html" % slug, page(slug, t, d, g, b, EXTRA.get(slug, "")))
 
@@ -327,7 +326,7 @@ ADM_BODY = (
 JRE = '<script src="/assets/js/jre.js"></script>'
 write("jre/eleicoes/inscricoes/index.html", page("eleicoes-rp", "Inscrição de candidatos", "Cadastre a sua candidatura nas Eleições RP: anexe o RG-RP, escolha o cargo e o número.", None, INSC_BODY, JRE).replace('<div class="wrap layout">', '<div class="wrap layout" style="grid-template-columns:1fr">'))
 write("presidencia/admin/jre/eleicoes/inscricoes/index.html", page("", "Inscrições de candidatos", "Painel da organização: todas as candidaturas registradas no banco de dados.", None, ADM_BODY, JRE).replace('<meta charset="utf-8">', '<meta charset="utf-8"><meta name="robots" content="noindex,nofollow">', 1).replace('<div class="wrap layout">', '<div class="wrap layout" style="grid-template-columns:1fr">').replace('class="content"', 'class="content" style="max-width:none"'))
-write("package.json", json.dumps({"name": "governo-roleplay", "private": True, "dependencies": {"@neondatabase/serverless": "^0.10.4"}}, indent=1))
+open("package.json","w",encoding="utf-8").write(json.dumps({"name": "governo-roleplay", "private": True, "dependencies": {"@neondatabase/serverless": "^0.10.4"}}, indent=1))
 
 # home (na raiz: "/")
 shapes = '<svg class="shapes" viewBox="0 0 1024 1024" role="img" aria-label="Formas da logotipo"><path class="s s1" fill="#00a83b" d="M0 0H512A512 512 0 0 1 0 512Z"/><circle class="s s2" fill="#0c4eff" cx="768" cy="256" r="256"/><path class="s s3" fill="#ffd100" d="M256 512L512 1024H0Z"/><path class="s s4" fill="#ed1c24" d="M1024 512V1024H512A512 512 0 0 1 1024 512Z"/></svg>'
@@ -370,5 +369,5 @@ write("index.html", home)
 # raiz e 404
 write("pt-br/index.html", '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=/"><title>%s</title><a href="/">Ir para o portal</a>' % NOME)
 write("404.html", page("404", "Página não encontrada", "O endereço que você acessou não existe neste portal.", None, P('Confira o endereço ou volte para a <a href="/">página inicial</a>. Você também pode ver o <a href="/pt-br/mapa-do-site/">mapa do site</a>.')))
-write("vercel.json", json.dumps({"cleanUrls": True, "trailingSlash": True, "redirects": [{"source": "/pt-br", "destination": "/", "permanent": False}, {"source": "/pt-br/", "destination": "/", "permanent": False}]}, indent=1))
+open("vercel.json", "w", encoding="utf-8").write(json.dumps({"buildCommand": "python3 build.py", "outputDirectory": "dist", "cleanUrls": True, "trailingSlash": True, "redirects": [{"source": "/pt-br", "destination": "/", "permanent": False}, {"source": "/pt-br/", "destination": "/", "permanent": False}]}, indent=1))
 print(len(PAGES) + 3, "páginas geradas em", OUT)
